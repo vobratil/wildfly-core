@@ -19,7 +19,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CLI
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.TRUSTSTORE;
 import static org.jboss.as.test.manualmode.auditlog.AbstractLogFieldsOfLogTestCase.executeForSuccess;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
