@@ -133,33 +133,22 @@ public class AuditLogBootingSyslogTest {
         final BlockingQueue<SyslogServerEventIF> queue = BlockedSyslogServerEventHandler.getQueue();
         queue.clear();
         container.start();
-        waitForExpectedQueueSize(17,18, queue);
+        waitForExpectedQueueSize(17, queue);
         queue.clear();
         makeOneLog();
         waitForExpectedQueueSize(1, queue);
         queue.clear();
     }
 
-    private void waitForExpectedQueueSize(int expectedSizeOne, int expectedSizeTwo, BlockingQueue<SyslogServerEventIF> queue) throws InterruptedException {
-        long endTime = System.currentTimeMillis() + TimeoutUtil.adjust(5000);
-        do {
-            if ((queue.size() >= expectedSizeOne) || (queue.size() == expectedSizeTwo)) {
-                break;
-            }
-            Thread.sleep(100);
-        } while (System.currentTimeMillis() < endTime);
-        assertTrue((queue.size() == expectedSizeOne) || (queue.size() == expectedSizeTwo));
-    }
-
     private void waitForExpectedQueueSize(int expectedSize, BlockingQueue<SyslogServerEventIF> queue) throws InterruptedException {
         long endTime = System.currentTimeMillis() + TimeoutUtil.adjust(5000);
         do {
-            if (queue.size() == expectedSize) {
+            if (queue.size() >= expectedSize) {
                 break;
             }
             Thread.sleep(100);
         } while (System.currentTimeMillis() < endTime);
-        Assert.assertEquals(queue.size(), expectedSize);
+        assertTrue(queue.size() >= expectedSize);
     }
 
     private boolean makeOneLog() throws IOException {
