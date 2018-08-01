@@ -18,6 +18,8 @@ package org.jboss.as.test.manualmode.auditlog;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CLIENT_CERT_STORE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.TRUSTSTORE;
 import static org.jboss.as.test.manualmode.auditlog.AbstractLogFieldsOfLogTestCase.executeForSuccess;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
@@ -135,19 +137,30 @@ public class AuditLogBootingSyslogTest {
         waitForExpectedQueueSize(17,18, queue);
         queue.clear();
         makeOneLog();
-        waitForExpectedQueueSize(1,1, queue);
+        waitForExpectedQueueSize(1, queue);
         queue.clear();
     }
 
-    private void waitForExpectedQueueSize(int expectedSizeMin, int expectedSizeMax, BlockingQueue<SyslogServerEventIF> queue) throws InterruptedException {
+    private void waitForExpectedQueueSize(int expectedSizeOne, int expectedSizeTwo, BlockingQueue<SyslogServerEventIF> queue) throws InterruptedException {
         long endTime = System.currentTimeMillis() + TimeoutUtil.adjust(5000);
         do {
-            if (queue.size() >= expectedSizeMin && queue.size() <= expectedSizeMax) {
+            if ((queue.size() >= expectedSizeOne) || (queue.size() == expectedSizeTwo)) {
                 break;
             }
             Thread.sleep(100);
         } while (System.currentTimeMillis() < endTime);
-        Assert.assertTrue((queue.size() >= expectedSizeMin) && (queue.size() <= expectedSizeMax));
+        assertTrue((queue.size() == expectedSizeOne) || (queue.size() == expectedSizeTwo));
+    }
+
+    private void waitForExpectedQueueSize(int expectedSize, BlockingQueue<SyslogServerEventIF> queue) throws InterruptedException {
+        long endTime = System.currentTimeMillis() + TimeoutUtil.adjust(5000);
+        do {
+            if (queue.size() == expectedSize) {
+                break;
+            }
+            Thread.sleep(100);
+        } while (System.currentTimeMillis() < endTime);
+        Assert.assertEquals(queue.size(), expectedSize);
     }
 
     private boolean makeOneLog() throws IOException {
