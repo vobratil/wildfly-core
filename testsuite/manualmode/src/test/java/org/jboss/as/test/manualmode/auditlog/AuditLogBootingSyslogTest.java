@@ -35,7 +35,6 @@ import org.jboss.as.test.shared.TimeoutUtil;
 import org.jboss.as.test.syslogserver.BlockedSyslogServerEventHandler;
 import org.jboss.dmr.ModelNode;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -133,7 +132,7 @@ public class AuditLogBootingSyslogTest {
         final BlockingQueue<SyslogServerEventIF> queue = BlockedSyslogServerEventHandler.getQueue();
         queue.clear();
         container.start();
-        waitForExpectedQueueSize(17, queue);
+        waitForExpectedQueueSize(17, 18, queue);
         queue.clear();
         makeOneLog();
         waitForExpectedQueueSize(1, queue);
@@ -141,17 +140,21 @@ public class AuditLogBootingSyslogTest {
     }
 
     private void waitForExpectedQueueSize(int expectedSize, BlockingQueue<SyslogServerEventIF> queue) throws InterruptedException {
+        waitForExpectedQueueSize(expectedSize, expectedSize, queue);
+    }
+
+    private void waitForExpectedQueueSize(int expectedSizeLowerBound, int expectedSizeUpperBound, BlockingQueue<SyslogServerEventIF> queue) throws InterruptedException {
         long endTime = System.currentTimeMillis() + TimeoutUtil.adjust(5000);
         do {
-            if (queue.size() >= expectedSize) {
+            if ((queue.size() >= expectedSizeLowerBound) && (queue.size() <= expectedSizeUpperBound)) {
                 break;
             }
             Thread.sleep(100);
         } while (System.currentTimeMillis() < endTime);
-        assertTrue(queue.size() >= expectedSize);
+        assertTrue((queue.size() >= expectedSizeLowerBound) && (queue.size() <= expectedSizeUpperBound));
     }
 
-    private boolean makeOneLog() throws IOException {
+        private boolean makeOneLog() throws IOException {
         ModelNode op = Util.getWriteAttributeOperation(auditLogConfigAddress,
                 AuditLogLoggerResourceDefinition.LOG_BOOT.getName(), new ModelNode(false));
         ModelNode result = container.getClient().getControllerClient().execute(op);
