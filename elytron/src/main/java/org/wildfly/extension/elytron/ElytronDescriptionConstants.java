@@ -422,6 +422,7 @@ interface ElytronDescriptionConstants {
     String REALM_NAME = "realm-name";
     String REALMS = "realms";
     String REASON = "reason";
+    String RECURSIVE = "recursive";
     String REFERENCE = "reference";
     String REFERRAL_MODE = "referral-mode";
     String REGISTER_JASPI_FACTORY = "register-jaspi-factory";
@@ -560,6 +561,7 @@ interface ElytronDescriptionConstants {
     String VALIDATE = "validate";
     String VALIDITY = "validity";
     String VALUE = "value";
+    String VERBOSE = "verbose";
     String VERIFIABLE = "verifiable";
     String VERSION = "version";
     String VERSION_COMPARISON = "version-comparison";
